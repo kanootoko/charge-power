@@ -14,7 +14,7 @@ def _prepare_print(  # pylint: disable=too-many-arguments
     old_value: float,
     new_time_ns: int,
     new_value: float,
-    full_wattage: float,
+    full_capacity: float,
 ) -> str:
     """Prepare concrete measurement of wattage difference message for rich.Console print"""
     real_delay = new_time_ns - old_time_ns
@@ -25,27 +25,27 @@ def _prepare_print(  # pylint: disable=too-many-arguments
     if difference == 0:
         return (
             f"{datetime.datetime.now().strftime('%m-%d %H:%M:%S')} ({iteration:3}):    stable"
-            f" [cyan]{0.0}[/cyan]W per hour: [green]{new_value:5.2f}[/green]W of"
-            f" {full_wattage:.2f}W ({new_value / full_wattage * 100:.1f}%)"
+            f" [cyan]{0.0}[/cyan]W: [green]{new_value:5.2f}[/green]Wh of"
+            f" {full_capacity:.2f}Wh ({new_value / full_capacity * 100:.1f}%)"
         )
-    time_left = (full_wattage - new_value) / per_hour * 60 if difference > 0 else (new_value) / -per_hour * 60
+    time_left = (full_capacity - new_value) / per_hour * 60 if difference > 0 else (new_value) / -per_hour * 60
     time_left_str = (
         f"{time_left:4.1f} minutes" if time_left < 60 else f"{time_left // 60:.0f}:{time_left % 60:02.0f} hours"
     )
     if difference > 0:
         return (
             f"{datetime.datetime.now().strftime('%m-%d %H:%M:%S')} ({iteration:3}):    charge"
-            f" {difference * 1000:7.2f}mW per {delay_seconds} seconds"
-            f" ([green]{per_hour:7.2f}[/green]W per hour):"
-            f" [yellow]{old_value:5.2f}[/yellow]W -> [green]{new_value:5.2f}[/green]W of"
-            f" {full_wattage:.2f}W ({new_value / full_wattage * 100:.1f}%,"
+            f" {difference * 1000:7.2f}mWh per {delay_seconds} seconds"
+            f" ([green]{per_hour:7.2f}[/green]W):"
+            f" [yellow]{old_value:5.2f}[/yellow]Wh -> [green]{new_value:5.2f}[/green]Wh of"
+            f" {full_capacity:.2f}Wh ({new_value / full_capacity * 100:.1f}%,"
             f" [i]{time_left_str} to full[/i])"
         )
     return (
         f"{datetime.datetime.now().strftime('%m-%d %H:%M:%S')} ({iteration:3}): discharge"
-        f" {difference * 1000:7.2f}mW per {delay_seconds} seconds ([red]{per_hour:7.2f}[/red]W per hour):"
-        f" [yellow]{old_value:5.2f}[/yellow]W -> [red]{new_value:5.2f}[/red]W of"
-        f" {full_wattage:.2f}W ({new_value / full_wattage * 100:.1f}%,"
+        f" {difference * 1000:7.2f}mWh per {delay_seconds} seconds ([red]{per_hour:7.2f}[/red]W):"
+        f" [yellow]{old_value:5.2f}[/yellow]Wh -> [red]{new_value:5.2f}[/red]Wh of"
+        f" {full_capacity:.2f}Wh ({new_value / full_capacity * 100:.1f}%,"
         f" [i]{time_left_str} to zero[/i])"
     )
 

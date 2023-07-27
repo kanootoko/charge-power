@@ -1,16 +1,20 @@
 [tool.poetry]
 name = "charge-power"
-version = "0.1.0"
+version = "0.1.1"
 description = "Small utility to track current charge/discharge wattage based on system sensors (Linux only)"
 authors = ["Aleksei Sokol <kanootoko@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [{ include = "charge_power" }]
 repository = "https://github.com/kanootoko/charge-power"
+
 classifiers = [
     "Operating System :: POSIX :: Linux",
     "Topic :: System :: Hardware",
 ]
+
+[tool.poetry.urls]
+"Bug tracker" = "https://github.com/kanootoko/charge-power/issues"
 
 
 [tool.poetry.dependencies]

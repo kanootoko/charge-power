@@ -9,6 +9,7 @@ from pathlib import Path
 import click
 from rich.console import Console
 
+from charge_power import __version__ as version
 from charge_power.charge import print_battery_charge
 
 
@@ -16,8 +17,11 @@ _CHARGE_COEFF = 0.00001139850942569049  # coefficient to multiply current_charge
 
 
 @click.command("print_wattage")
-@click.option("--delay", "-d", type=int, default=30, help="Delay in seconds between measurements", show_default=True)
-@click.option("--number", "-n", type=int, default=None, help="Delay in seconds between measurements", show_default=True)
+@click.version_option(version)
+@click.option("--delay", "-d", type=int, default=30, help="Delay between measurements in seconds", show_default=True)
+@click.option(
+    "--number", "-n", type=int, default=None, help="Number of measurements before stop", show_default="(unlimited)"
+)
 @click.option("--log-file", "-l", type=click.Path(dir_okay=False), default=None, help="Path to a file to log output")
 @click.argument(
     "battery_path", type=click.Path(exists=True, file_okay=False), default=None, metavar="BATTERY_PATH", required=False
@@ -57,7 +61,7 @@ def main(delay: int, number: int | None, log_file: str | None, battery_path: str
             logfile = open(log_file, "a", encoding="utf-8")  # pylint: disable=consider-using-with
             print(
                 f"Starting to print charge change (delay={delay}, number={number})."
-                f" Current charge is {current_charge:.2f}W",
+                f" Current charge is {current_charge:.2f}Wh",
                 file=logfile,
             )
         except Exception as exc:  # pylint: disable=broad-except
@@ -66,7 +70,7 @@ def main(delay: int, number: int | None, log_file: str | None, battery_path: str
 
     console.print(
         f"Starting to print charge change [dim](delay={delay}, number={number})[/dim]."
-        f" Current charge is [green]{current_charge:.2f}[/green]W"
+        f" Current charge is [green]{current_charge:.2f}[/green]Wh"
     )
     try:
         print_battery_charge(get_charge, full_wattage, delay, rng, console, logfile)
